@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- ── Viewport / Mobile ──────────────────────────────────────────────── -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="DEAD ZONE" />
+    <meta name="theme-color" content="#0a0a0a" />
+
+    <!-- ── Primary SEO ────────────────────────────────────────────────────── -->
+    <title>DEAD ZONE — 3D Zombie Survival Browser Game</title>
+    <meta name="description" content="Survive endless waves of zombies in this immersive 3D browser shooter. Free to play. No download required." />
+    <meta name="keywords" content="zombie game, browser game, 3D shooter, survival game, WebGL game, free online game, zombie survival" />
+    <meta name="author" content="DEAD ZONE" />
+    <link rel="canonical" href="https://your-project.vercel.app/" />
+
+    <!-- ── Open Graph (Facebook, Discord, WhatsApp) ───────────────────────── -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:site_name"   content="DEAD ZONE" />
+    <meta property="og:title"       content="DEAD ZONE — 3D Zombie Survival" />
+    <meta property="og:description" content="Survive endless zombie waves in your browser. Free 3D shooter — no download, no install. How long can you last?" />
+    <meta property="og:url"         content="https://your-project.vercel.app/" />
+    <meta property="og:image"       content="https://your-project.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt"   content="DEAD ZONE - zombie survival game screenshot" />
+
+    <!-- ── Twitter Card ──────────────────────────────────────────────────── -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="DEAD ZONE — 3D Zombie Survival" />
+    <meta name="twitter:description" content="Survive endless zombie waves in your browser. Free 3D shooter — no download required." />
+    <meta name="twitter:image"       content="https://your-project.vercel.app/og-image.png" />
+    <meta name="twitter:image:alt"   content="DEAD ZONE gameplay screenshot" />
+
+    <!-- ── Structured Data (JSON-LD) ──────────────────────────────────────── -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoGame",
+      "name": "DEAD ZONE",
+      "description": "Survive endless waves of zombies in this immersive 3D browser shooter.",
+      "url": "https://your-project.vercel.app/",
+      "image": "https://your-project.vercel.app/og-image.png",
+      "genre": ["Shooter", "Survival", "Action"],
+      "playMode": "SinglePlayer",
+      "applicationCategory": "Game",
+      "operatingSystem": "Web Browser",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    }
+    </script>
+
+    <!-- ── PWA Manifest & Icons ───────────────────────────────────────────── -->
+    <link rel="manifest"          href="/manifest.json" />
+    <link rel="icon"              type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon"  href="/icon-192.png" />
+    <link rel="apple-touch-icon"  sizes="180x180" href="/icon-192.png" />
+
+    <!-- ── Preconnect to external origins ────────────────────────────────── -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- ── Fonts (Creepster for logos, Rubik for UI) ─────────────────────── -->
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Rubik:wght@400;700;900&display=swap" rel="stylesheet" />
+
+    <!-- ── Tailwind CSS CDN ───────────────────────────────────────────────── -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              blood:         '#c0202a',
+              'blood-bright':'#ff3b3b',
+              toxic:         '#8fd14f',
+            },
+            fontFamily: {
+              horror: ['Creepster', 'cursive'],
+              game:   ['Rubik', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- ── Colorblind SVG filter defs ────────────────────────────────────── -->
+    <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+      <defs>
+        <filter id="cb-protan">
+          <feColorMatrix type="matrix" values="0.567,0.433,0,0,0 0.558,0.442,0,0,0 0,0.242,0.758,0,0 0,0,0,1,0"/>
+        </filter>
+        <filter id="cb-deutan">
+          <feColorMatrix type="matrix" values="0.625,0.375,0,0,0 0.7,0.3,0,0,0 0,0.3,0.7,0,0 0,0,0,1,0"/>
+        </filter>
+        <filter id="cb-tritan">
+          <feColorMatrix type="matrix" values="0.95,0.05,0,0,0 0,0.433,0.567,0,0 0,0.475,0.525,0,0 0,0,0,1,0"/>
+        </filter>
+      </defs>
+    </svg>
+  </head>
+
+  <body>
+    <!-- ── Loading screen ──────────────────────────────────────────────────── -->
+    <div id="loading-screen" class="loading-screen">
+      <div class="loading-content">
+        <div class="loading-logo">
+          <span class="logo-dead">DEAD</span>
+          <span class="logo-zone">ZONE</span>
+        </div>
+        <p class="loading-tagline">Survive the outbreak</p>
+
+        <div class="progress-wrap">
+          <div class="progress-bar">
+            <div id="progress-fill" class="progress-fill"></div>
+          </div>
+          <div class="progress-meta">
+            <span id="loading-status" class="loading-status">Booting engine…</span>
+            <span id="loading-percent" class="loading-percent">0%</span>
+          </div>
+        </div>
+      </div>
+      <div class="loading-footer">Tip: Stay mobile. A standing survivor is a dead survivor.</div>
+    </div>
+
+    <!-- ── Game canvas ─────────────────────────────────────────────────────── -->
+    <div id="game-container" class="game-container">
+      <canvas id="game-canvas"></canvas>
+    </div>
+
+    <!-- ── UI overlay ─────────────────────────────────────────────────────── -->
+    <div id="ui-root" class="ui-root"></div>
+
+    <!-- ── PWA Install prompt ─────────────────────────────────────────────── -->
+    <div id="pwa-prompt" style="
+      display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+      background:rgba(8,11,18,0.95); border:1px solid rgba(192,32,42,0.4);
+      border-radius:12px; padding:14px 20px; z-index:9990;
+      font-family:'Rubik',sans-serif; color:#e4e0da; max-width:360px; width:90%;
+      backdrop-filter:blur(12px); box-shadow:0 8px 40px rgba(0,0,0,0.6);
+      align-items:center; gap:12px;
+    ">
+      <div style="flex:1;">
+        <div style="font-weight:700; font-size:.95rem; color:#fff;">📲 Install DEAD ZONE</div>
+        <div style="font-size:.75rem; color:#8a9090; margin-top:2px;">Play offline, fullscreen, no browser chrome.</div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button id="pwa-install-btn" style="
+          background:#c0202a; color:#fff; border:none; border-radius:6px;
+          padding:8px 16px; font-weight:700; cursor:pointer; font-family:inherit; font-size:.82rem;
+        ">Install</button>
+        <button id="pwa-dismiss-btn" style="
+          background:rgba(255,255,255,.08); color:#8a9090; border:none; border-radius:6px;
+          padding:8px 12px; cursor:pointer; font-family:inherit; font-size:.82rem;
+        ">✕</button>
+      </div>
+    </div>
+
+    <!-- ── No-JS fallback ─────────────────────────────────────────────────── -->
+    <noscript>
+      <div style="position:fixed;inset:0;display:grid;place-items:center;background:#050505;color:#ff3b3b;font-family:sans-serif;font-size:1.1rem;padding:2rem;text-align:center;">
+        DEAD ZONE requires JavaScript. Please enable it to play.
+      </div>
+    </noscript>
+
+    <!-- ── Service Worker registration ───────────────────────────────────── -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then(reg => {
+              // Check for updates every 60 minutes
+              setInterval(() => reg.update(), 60 * 60 * 1000);
+            })
+            .catch(err => console.warn('[SW] Registration failed:', err));
+        });
+      }
+
+      // ── PWA install prompt ──────────────────────────────────────────────
+      let _deferredInstall = null;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        _deferredInstall = e;
+        // Show prompt after a short delay (don't annoy on first visit)
+        const dismissed = sessionStorage.getItem('dz-pwa-dismissed');
+        if (!dismissed) {
+          setTimeout(() => {
+            const prompt = document.getElementById('pwa-prompt');
+            if (prompt) prompt.style.display = 'flex';
+          }, 8000);
+        }
+      });
+
+      document.getElementById('pwa-install-btn')?.addEventListener('click', async () => {
+        if (!_deferredInstall) return;
+        _deferredInstall.prompt();
+        const { outcome } = await _deferredInstall.userChoice;
+        if (outcome === 'accepted') {
+          document.getElementById('pwa-prompt').style.display = 'none';
+        }
+        _deferredInstall = null;
+      });
+
+      document.getElementById('pwa-dismiss-btn')?.addEventListener('click', () => {
+        document.getElementById('pwa-prompt').style.display = 'none';
+        sessionStorage.setItem('dz-pwa-dismissed', '1');
+      });
+    </script>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>

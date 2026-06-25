@@ -1,0 +1,366 @@
+/* ============================================================
+   DEAD ZONE — global styles
+   ============================================================ */
+
+:root {
+  --blood:       #c0202a;
+  --blood-bright:#ff3b3b;
+  --toxic:       #8fd14f;
+  --toxic-dim:   #5c8a32;
+  --bg:          #060709;
+  --panel:       rgba(8, 11, 15, 0.82);
+  --text:        #e4e0da;
+  --text-dim:    #8a9090;
+  --font:        'Rubik', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --horror-font: 'Creepster', cursive;
+  --hud-shadow:  0 2px 16px rgba(0, 0, 0, 0.8);
+  --glow-red:    0 0 24px rgba(200, 32, 42, 0.45);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+
+  /* Critical for mobile: kill scroll/zoom/highlight gestures over the game */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+canvas {
+  display: block;
+  touch-action: none;
+}
+
+.fatal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--blood-bright);
+}
+
+/* ============================================================
+   Game container + canvas
+   ============================================================ */
+
+.game-container {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* Respect notches on mobile while keeping canvas full-bleed */
+  background: radial-gradient(circle at 50% 40%, #16181b 0%, #050505 80%);
+}
+
+#game-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.ui-root {
+  position: fixed;
+  inset: 0;
+  pointer-events: none; /* children opt back in with pointer-events:auto */
+  z-index: 10;
+}
+
+.ui-root > * {
+  pointer-events: auto;
+}
+
+/* ============================================================
+   Loading screen
+   ============================================================ */
+
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(192, 32, 42, 0.12) 0%, transparent 55%),
+    linear-gradient(160deg, #0d0d0f 0%, #050505 100%);
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+}
+
+.loading-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loading-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(440px, 82vw);
+}
+
+.loading-logo {
+  display: flex;
+  gap: 0.6rem;
+  font-weight: 900;
+  font-size: clamp(2.6rem, 11vw, 4.4rem);
+  letter-spacing: 0.14em;
+  line-height: 1;
+}
+
+.logo-dead {
+  color: var(--blood);
+  text-shadow: 0 0 24px rgba(192, 32, 42, 0.6);
+  animation: flicker 4.5s infinite;
+}
+
+.logo-zone {
+  color: var(--text);
+  text-shadow: var(--hud-shadow);
+}
+
+.loading-tagline {
+  margin-top: 0.8rem;
+  margin-bottom: 2.4rem;
+  color: var(--text-dim);
+  font-size: clamp(0.8rem, 3.4vw, 1rem);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+
+.progress-wrap {
+  width: 100%;
+}
+
+.progress-bar {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--blood) 0%, var(--blood-bright) 100%);
+  box-shadow: 0 0 16px rgba(255, 59, 59, 0.7);
+  transition: width 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: shimmer 1.6s infinite;
+}
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.8rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.loading-percent {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.loading-footer {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom) + 1.6rem);
+  font-size: 0.74rem;
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  opacity: 0.7;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes flicker {
+  0%,
+  19%,
+  21%,
+  23%,
+  25%,
+  54%,
+  56%,
+  100% {
+    opacity: 1;
+  }
+  20%,
+  24%,
+  55% {
+    opacity: 0.4;
+  }
+}
+
+/* ============================================================
+   Damage / hit vignette (player.js owned, engine-level)
+   ============================================================ */
+.fx-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: inset 0 0 160px 40px rgba(192, 32, 42, 0.9);
+}
+
+/* ============================================================
+   Horror typography helpers
+   ============================================================ */
+.font-horror { font-family: var(--horror-font); }
+
+/* ============================================================
+   Glowing border utility (used by active HUD elements)
+   ============================================================ */
+.glow-red  { box-shadow: 0 0 18px rgba(200,32,42,0.45), inset 0 0 8px rgba(200,32,42,0.15); }
+.glow-gold { box-shadow: 0 0 18px rgba(255,210,0,0.45); }
+
+/* ============================================================
+   Mobile touch controls
+   ============================================================ */
+
+.mobile-controls {
+  position: absolute;
+  inset: 0;
+  display: none; /* shown only on touch devices */
+}
+
+.mobile-controls.active {
+  display: block;
+}
+
+.joystick-zone {
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom) + 24px);
+  left: calc(env(safe-area-inset-left) + 24px);
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  touch-action: none;
+}
+
+.joystick-thumb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 58px;
+  height: 58px;
+  margin: -29px 0 0 -29px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: transform 0.04s linear;
+}
+
+.touch-btn {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(192, 32, 42, 0.22);
+  border: 1px solid rgba(255, 59, 59, 0.5);
+  color: var(--text);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  touch-action: none;
+}
+
+.touch-btn:active {
+  background: rgba(192, 32, 42, 0.5);
+}
+
+.btn-fire {
+  bottom: calc(env(safe-area-inset-bottom) + 36px);
+  right: calc(env(safe-area-inset-right) + 28px);
+  width: 92px;
+  height: 92px;
+  font-size: 0.85rem;
+}
+
+.btn-reload {
+  bottom: calc(env(safe-area-inset-bottom) + 150px);
+  right: calc(env(safe-area-inset-right) + 40px);
+  width: 64px;
+  height: 64px;
+}
+
+.btn-jump {
+  bottom: calc(env(safe-area-inset-bottom) + 60px);
+  right: calc(env(safe-area-inset-right) + 130px);
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Right half of screen acts as look/aim drag area on mobile */
+.look-zone {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55%;
+  height: 70%;
+  touch-action: none;
+}
+
+/* ============================================================
+   Utility
+   ============================================================ */
+
+.hidden {
+  display: none !important;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .crosshair {
+    opacity: 0.7;
+  }
+}
